@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\Semester07\\C#_API\\Microservice\\Mango_Web\\Mango.Services.ProductAPI\\wwwroot\\Uploads\\Product\\3\\image.png",
+      "PackagePath": "staticwebassets\\Uploads\\Product\\3\\image.png"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.Mango.Services.ProductAPI.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.build.Mango.Services.ProductAPI.props",
+      "PackagePath": "build\\Mango.Services.ProductAPI.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildMultiTargeting.Mango.Services.ProductAPI.props",
+      "PackagePath": "buildMultiTargeting\\Mango.Services.ProductAPI.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildTransitive.Mango.Services.ProductAPI.props",
+      "PackagePath": "buildTransitive\\Mango.Services.ProductAPI.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
