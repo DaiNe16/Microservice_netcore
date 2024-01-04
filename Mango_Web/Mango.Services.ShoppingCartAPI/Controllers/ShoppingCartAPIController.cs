@@ -7,6 +7,9 @@ using Mango.Services.ShoppingCartAPI.Service.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Stripe;
+using Stripe.Checkout;
 
 namespace Mango.Services.ShoppingCartAPI.Controllers
 {
@@ -20,14 +23,127 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
         private ResponseDto _response;
         private IProductService _productService;
         private ICouponService _couponService;
+        private StripeSettings _stripeSettings;
 
-        public ShoppingCartAPIController(AppDbContext appDbContext, IMapper mapper, IProductService productService, ICouponService couponService)
+        public ShoppingCartAPIController(AppDbContext appDbContext, IMapper mapper, IProductService productService, ICouponService couponService, IOptions<StripeSettings> stripeSettings)
         {
             _db = appDbContext;
             _mapper = mapper;
             _response = new ResponseDto();
             _productService = productService;
             _couponService = couponService;
+            _stripeSettings = stripeSettings.Value;
+        }
+
+        [HttpGet("CheckOut")]
+        public async Task<ResponseDto> CheckOut(string userId)
+        {
+            try
+            {
+                //Get cart
+                var cartHeader = _db.CartHeader.FirstOrDefault(u => u.UserId == userId);
+                if (cartHeader == null)
+                {
+                    _response.Message = "Please add item to cart.";
+                    _response.IsSuccess = false;
+                    return _response;
+                }
+                CartDto cartDto = new CartDto()
+                {
+                    CartHeader = _mapper.Map<CartHeaderDto>(cartHeader),
+                };
+                cartDto.CartDetails = _mapper.Map<IEnumerable<CartDetailsDto>>(_db.CartDetails.Where(u => u.CartHeaderId == cartHeader.CartHeaderId));
+                IEnumerable<ProductDto> listProductDto = await _productService.GetProducts();
+
+                foreach (var cartDetail in cartDto.CartDetails)
+                {
+                    cartDetail.Product = listProductDto.FirstOrDefault(u => u.ProductId == cartDetail.ProductId);
+                    cartDto.CartHeader.CartTotal += (cartDetail.Product.Price * cartDetail.Count);
+                }
+                //Apply coupon 
+                if (!string.IsNullOrEmpty(cartDto.CartHeader.CouponCode))
+                {
+                    CouponDto coupon = await _couponService.GetCouponByCode(cartDto.CartHeader.CouponCode);
+                    if (cartDto.CartHeader.CartTotal > coupon.MinAmount)
+                    {
+                        cartDto.CartHeader.CartTotal -= (cartDto.CartHeader.CartTotal * coupon.DiscountAmount / 100);
+                    }
+                }
+
+                //Payment
+                StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
+                var domain = "http://localhost:4242";
+
+                var options = new SessionCreateOptions
+                {
+                    //Once item
+                    //LineItems = new List<SessionLineItemOptions>
+                    //{
+                    //    new SessionLineItemOptions
+                    //    {
+                    //        // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                    //        PriceData = new SessionLineItemPriceDataOptions
+                    //        {
+                    //            Currency = "usd",
+                    //            UnitAmount = 555,
+                    //            ProductData = new SessionLineItemPriceDataProductDataOptions
+                    //            {
+                    //                Name = "IPHONE 999",
+                    //                Description = "Hu ha hi hi..."
+                    //            }
+                    //        },
+                    //        Quantity = 1,
+
+                    //    },
+                    //    new SessionLineItemOptions
+                    //    {
+                    //        // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                    //        PriceData = new SessionLineItemPriceDataOptions
+                    //        {
+                    //            Currency = "usd",
+                    //            UnitAmount = 555,
+                    //            ProductData = new SessionLineItemPriceDataProductDataOptions
+                    //            {
+                    //                Name = "IPHONE 999",
+                    //                Description = "Hu ha hi hi..."
+                    //            }
+                    //        },
+                    //        Quantity = 1,
+
+                    //    },
+                    //},
+
+
+                    //List item
+                    LineItems = cartDto.CartDetails.Select(cartDetail => new SessionLineItemOptions
+                    {
+                        PriceData = new SessionLineItemPriceDataOptions
+                        {
+                            Currency = "usd",
+                            UnitAmount = long.Parse(cartDetail?.Product?.Price + ""),
+                            ProductData = new SessionLineItemPriceDataProductDataOptions
+                            {
+                                Name = cartDetail.Product.Name,
+                                Description = cartDetail.Product.Description
+                            }
+                        },
+                        Quantity = cartDetail.Count,
+                    }).ToList(),
+
+                    Mode = "payment",
+                    SuccessUrl = "https://translate.google.com/?hl=vi&sl=en&tl=vi&text=success&op=translate",
+                    CancelUrl = "https://translate.google.com/?hl=vi&sl=en&tl=vi&text=cance&op=translate",
+                };
+                var service = new SessionService();
+                Session session = service.Create(options);
+
+                _response.Result = session.Url;
+            }catch (Exception ex)
+            {
+                _response.Message = ex.Message.ToString();
+                _response.IsSuccess = false;
+            }
+            return _response;
         }
 
         [HttpGet("GetCart")]

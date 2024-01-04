@@ -7,6 +7,7 @@ using Mango.Services.ShoppingCartAPI.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Mango.Services.ShoppingCartAPI.Utility;
+using Mango.Services.ShoppingCartAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,9 @@ var builder = WebApplication.CreateBuilder(args);
 //Register connection_string
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'MovieDBContext' not found.")));
+
+//Config stripe
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("StripeSettings"));
 
 //Register Mapper
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();

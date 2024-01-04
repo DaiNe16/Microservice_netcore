@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "S/37qdkLeREhDEnaMe320eJIi6VFkmNZh5uKA6NA07o=",
+  "Hash": "tFs5PwYSjah29z8dNvjbHcH3KHaB/OVH6DU38UeeHys=",
   "Source": "Mango.Services.ProductAPI",
   "BasePath": "_content/Mango.Services.ProductAPI",
   "Mode": "Default",
@@ -15,23 +15,5 @@
       "Pattern": "**"
     }
   ],
-  "Assets": [
-    {
-      "Identity": "D:\\Semester07\\C#_API\\Microservice\\Mango_Web\\Mango.Services.ProductAPI\\wwwroot\\Uploads\\Product\\3\\image.png",
-      "SourceId": "Mango.Services.ProductAPI",
-      "SourceType": "Discovered",
-      "ContentRoot": "D:\\Semester07\\C#_API\\Microservice\\Mango_Web\\Mango.Services.ProductAPI\\wwwroot\\",
-      "BasePath": "_content/Mango.Services.ProductAPI",
-      "RelativePath": "Uploads/Product/3/image.png",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\Uploads\\Product\\3\\image.png"
-    }
-  ]
+  "Assets": []
 }
