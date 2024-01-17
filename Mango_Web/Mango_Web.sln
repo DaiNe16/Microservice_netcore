@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mango.Services.ProductAPI",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mango.Services.ShoppingCartAPI", "Mango.Services.ShoppingCartAPI\Mango.Services.ShoppingCartAPI.csproj", "{8FA56F3F-9AF0-4D36-8EB9-2F56B19591C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mango.GatewaySolution", "Mango.GatewaySolution\Mango.GatewaySolution.csproj", "{2173639F-1C45-4A28-801C-DC3B2B1B5C9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mango.GatewaySolution", "Mango.GatewaySolution\Mango.GatewaySolution.csproj", "{2173639F-1C45-4A28-801C-DC3B2B1B5C9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mango.Services.EmailAPI", "Mango.Services.EmailAPI\Mango.Services.EmailAPI.csproj", "{265BDDE7-4A24-4BD1-9C00-670131980C72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{2173639F-1C45-4A28-801C-DC3B2B1B5C9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2173639F-1C45-4A28-801C-DC3B2B1B5C9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2173639F-1C45-4A28-801C-DC3B2B1B5C9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{265BDDE7-4A24-4BD1-9C00-670131980C72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{265BDDE7-4A24-4BD1-9C00-670131980C72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{265BDDE7-4A24-4BD1-9C00-670131980C72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{265BDDE7-4A24-4BD1-9C00-670131980C72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,6 +57,7 @@ Global
 		{792975BD-CE58-44F1-B5A3-B41E9C79D5CC} = {FD3C9DEC-7381-4930-8A82-5F603AF190D4}
 		{8FA56F3F-9AF0-4D36-8EB9-2F56B19591C1} = {FD3C9DEC-7381-4930-8A82-5F603AF190D4}
 		{2173639F-1C45-4A28-801C-DC3B2B1B5C9D} = {FD3C9DEC-7381-4930-8A82-5F603AF190D4}
+		{265BDDE7-4A24-4BD1-9C00-670131980C72} = {FD3C9DEC-7381-4930-8A82-5F603AF190D4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {40622238-8C22-4A27-BDA1-94D735FE49B8}

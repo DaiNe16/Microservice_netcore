@@ -3,6 +3,7 @@ using Mango.Services.ProductAPI.Models.Dto;
 using Mango.Services.ShoppingCartAPI.Data;
 using Mango.Services.ShoppingCartAPI.Models;
 using Mango.Services.ShoppingCartAPI.Models.Dto;
+using Mango.Services.ShoppingCartAPI.RabbitMQSender;
 using Mango.Services.ShoppingCartAPI.Service.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +16,7 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
 {
     [Route("api/cart")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class ShoppingCartAPIController : ControllerBase
     {
         private readonly AppDbContext _db;
@@ -24,8 +25,9 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
         private IProductService _productService;
         private ICouponService _couponService;
         private StripeSettings _stripeSettings;
+        private IRabbitMQCartMessageSender _rabbitMQCartMessageSender;
 
-        public ShoppingCartAPIController(AppDbContext appDbContext, IMapper mapper, IProductService productService, ICouponService couponService, IOptions<StripeSettings> stripeSettings)
+        public ShoppingCartAPIController(AppDbContext appDbContext, IMapper mapper, IProductService productService, ICouponService couponService, IOptions<StripeSettings> stripeSettings, IRabbitMQCartMessageSender rabbitMQCartMessageSender)
         {
             _db = appDbContext;
             _mapper = mapper;
@@ -33,6 +35,7 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
             _productService = productService;
             _couponService = couponService;
             _stripeSettings = stripeSettings.Value;
+            _rabbitMQCartMessageSender = rabbitMQCartMessageSender;
         }
 
         [HttpGet("CheckOut")]
@@ -139,6 +142,21 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
 
                 _response.Result = session.Url;
             }catch (Exception ex)
+            {
+                _response.Message = ex.Message.ToString();
+                _response.IsSuccess = false;
+            }
+            return _response;
+        }
+
+        [HttpPost("SendMessageToQueue")]
+        public async Task<ResponseDto> SendMessageToQueue(string message, string queue)
+        {
+            try
+            {
+                _rabbitMQCartMessageSender.SendMessage(message, queue);
+            }
+            catch (Exception ex)
             {
                 _response.Message = ex.Message.ToString();
                 _response.IsSuccess = false;
